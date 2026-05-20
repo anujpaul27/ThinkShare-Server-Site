@@ -110,7 +110,23 @@ app.put("/idea-update/:id", async (req, res) => {
   }
 });
 
+// Find Specif idea
+app.get('/idea/:id', async (req, res) => {
+  const id = new ObjectId(req.params.id);
+  try {
+    const result = await database.collection("ideas")
+    .findOne({_id: id})
 
+    res.status(200).json({
+      message: "All idea fetch successful.",
+      data: result,
+    });
+  } catch (err) {
+    res.status(403).json({
+      message: err.message,
+    });
+  }
+});
 
 
 
