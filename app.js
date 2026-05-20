@@ -128,7 +128,31 @@ app.get('/idea/:id', async (req, res) => {
   }
 });
 
+// Delete Idea
+app.delete("/idea-delete/:id", async (req, res) => {
+  try {
+    // get the id from the params for create new _id
+    const query = { _id: new ObjectId(req.params.id) };
 
+    // delete specific idea with the query
+    const result = await database.collection("ideas").deleteOne(query);
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Idea not found. Nothing was deleted.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Idea Delete Successful.",
+      data: result,
+    });
+  } catch (err) {
+    res.status(403).json({
+      message: err.message,
+    });
+  }
+});
 
 
 
