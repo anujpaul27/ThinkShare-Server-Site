@@ -77,7 +77,24 @@ app.get("/read-idea", async (req, res) => {
   }
 });
 
-
+// READ IDEA without condition
+app.get("/read-idea-all", async (req, res) => {
+  try 
+  {
+    const ideas = await database.collection("ideas").find().toArray();
+  
+    res.status(200).json({
+      message: "Idea fetch successful.",
+      data: ideas,
+    });
+  }
+  catch (err)
+  {
+    res.status(403).json({
+      message: err.message
+    })
+  }
+});
 
 
 
