@@ -77,26 +77,38 @@ app.get("/read-idea", async (req, res) => {
   }
 });
 
-// READ IDEA without condition
+// READ IDEA without conditio
 app.get("/read-idea-all", async (req, res) => {
-  try 
-  {
-    const ideas = await database.collection("ideas").find().toArray();
-  
-    res.status(200).json({
-      message: "Idea fetch successful.",
-      data: ideas,
-    });
-  }
-  catch (err)
-  {
-    res.status(403).json({
-      message: err.message
-    })
-  }
+  const ideas = await database.collection("ideas").find().toArray();
+
+  res.status(200).json({
+    message: "Idea fetch successful.",
+    data: ideas,
+  });
 });
 
+// UPDATED IDEA
+app.put("/idea-update/:id", async (req, res) => {
+  // get the id from the params
+  const query = { _id: new ObjectId(req.params.id) };
 
+  try {
+    // Convert array and then save to DB
+    const tag = req.body.tags.split(",");
+    req.body.tags = tag;
+    
+    const updated = await database
+      .collection("ideas")
+      .findOneAndUpdate(query, { $set: req.body });
+
+    res.status(200).json({
+      message: "Idea updated successful",
+      success: true,
+    });
+  } catch (err) {
+    res.status(403).json({ message: err.message });
+  }
+});
 
 
 
