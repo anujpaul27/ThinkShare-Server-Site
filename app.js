@@ -154,7 +154,27 @@ app.delete("/idea-delete/:id", async (req, res) => {
   }
 });
 
+// Find my idea with author id
+app.get('/my-ideas/:id', async (req,res)=> {
+  try 
+  {
+    const id = req.params.id;
+    const ideas = await database.collection('ideas').find({
+      author_id : id
+    }).toArray()
 
+    res.status(200).json({
+      message: 'Fetch successful.',
+      data: ideas
+    })
+  }
+  catch (err)
+  {
+    res.status(403).json({
+      message: err.message,
+    })
+  }
+})
 
 
 
