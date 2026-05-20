@@ -42,7 +42,24 @@ app.get("/", (req, res) => {
   res.send("Server is running..");
 });
 
+// CREATE IDEA
+app.post("/create-idea", async (req, res) => {
+  try {
+    // Convert array and then save to DB
+    const tag = req.body.tags.split(",");
+    req.body.tags = tag;
 
+    const result = await database.collection("ideas").insertOne(req.body);
+    res.status(201).json({
+      message: "Idea post successful.",
+      data: result,
+    });
+  } catch (err) {
+    res.status(403).json({
+      message: err.message,
+    });
+  }
+});
 
 
 
