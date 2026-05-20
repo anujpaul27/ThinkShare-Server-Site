@@ -61,7 +61,21 @@ app.post("/create-idea", async (req, res) => {
   }
 });
 
+// READ IDEA with limit for the home page rendering
+app.get("/read-idea", async (req, res) => {
+  try {
+    const ideas = await database.collection("ideas").find().limit(6).toArray();
 
+    res.status(200).json({
+      message: "Idea Fatch Successful.",
+      data: ideas,
+    });
+  } catch (err) {
+    res.status(403).json({
+      message: err.message,
+    });
+  }
+});
 
 
 
