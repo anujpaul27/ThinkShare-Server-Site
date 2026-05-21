@@ -195,11 +195,13 @@ app.post('/comment', async(req,res)=> {
   }
 })
 
-// Get Comment
-app.get('/comment', async (req,res)=> {
+// Get Comment with post id
+app.get('/comment/:id', async (req,res)=> {
   try
   {
-    const comments = await database.collection('comment').find().toArray()
+    const comments = await database.collection(`comment`)
+    .find({postID: req.params.id})
+    .toArray()
 
     res.status(200).json({
       message: 'Comment fetch successful.',
@@ -213,6 +215,48 @@ app.get('/comment', async (req,res)=> {
     })
   }
 })
+
+// Get Comment with comment id
+app.get('/comments/:id', async (req,res)=> {
+  const id = new ObjectId(req.params.id)
+  try
+  {
+    const comments = await database.collection(`comment`)
+    .find({_id: id})
+    .toArray()
+
+    res.status(200).json({
+      message: 'Comment fetch successful.',
+      data: comments
+    })
+  } 
+  catch (err)
+  {
+    res.status(403).json({
+      message: err.message
+    })
+  }
+})
+
+// UPDATED IDEA
+app.put("/comments/:id", async (req, res) => {
+  // get the id from the params
+  const query = { _id: new ObjectId(req.params.id) };
+  console.log(req.body.text);
+  try {   
+    const updated = await database
+      .collection("comment")
+      .findOneAndUpdate(query, { $set: {text: req.body.text} });
+
+    res.status(200).json({
+      message: "Idea updated successful",
+      success: true,
+    });
+  } catch (err) {
+    res.status(403).json({ message: err.message });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
