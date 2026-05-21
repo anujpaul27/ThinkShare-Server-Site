@@ -195,6 +195,24 @@ app.post('/comment', async(req,res)=> {
   }
 })
 
+// Get Comment
+app.get('/comment', async (req,res)=> {
+  try
+  {
+    const comments = await database.collection('comment').find().toArray()
+
+    res.status(200).json({
+      message: 'Comment fetch successful.',
+      data: comments
+    })
+  } 
+  catch (err)
+  {
+    res.status(403).json({
+      message: err.message
+    })
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
