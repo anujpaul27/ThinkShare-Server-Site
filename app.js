@@ -238,7 +238,29 @@ app.get('/comments/:id', async (req,res)=> {
   }
 })
 
-// UPDATED IDEA
+
+// Get Comment with user id
+app.get('/comments-userID/:id', async (req,res)=> {
+  try
+  {
+    const comments = await database.collection(`comment`)
+    .find({userID: req.params.id})
+    .toArray()
+
+    res.status(200).json({
+      message: 'Comment fetch successful.',
+      data: comments
+    })
+  } 
+  catch (err)
+  {
+    res.status(403).json({
+      message: err.message
+    })
+  }
+})
+
+// UPDATED comment
 app.put("/comments/:id", async (req, res) => {
   // get the id from the params
   const query = { _id: new ObjectId(req.params.id) };
@@ -254,6 +276,33 @@ app.put("/comments/:id", async (req, res) => {
     });
   } catch (err) {
     res.status(403).json({ message: err.message });
+  }
+});
+
+
+// Delete comment
+app.delete("/comment-delete/:id", async (req, res) => {
+  try {
+    // get the id from the params for create new _id
+    const query = { _id: new ObjectId(req.params.id) };
+
+    // delete specific idea with the query
+    const result = await database.collection("comment").deleteOne(query);
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Idea not found. Nothing was deleted.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Idea Delete Successful.",
+      data: result,
+    });
+  } catch (err) {
+    res.status(403).json({
+      message: err.message,
+    });
   }
 });
 
