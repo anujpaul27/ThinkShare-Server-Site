@@ -176,6 +176,24 @@ app.get('/my-ideas/:id', async (req,res)=> {
   }
 })
 
+// Post comment
+app.post('/comment', async(req,res)=> {
+  try 
+  {
+    const result = await database.collection('comment').insertOne(req.body)
+    // success response 
+    res.status(201).json({
+      message: 'Comment post successful',
+      data: result
+    })
+  }
+  catch (err)
+  {
+    res.status(403).json({
+      message: err.message
+    })
+  }
+})
 
 
 app.listen(PORT, () => {
