@@ -323,6 +323,42 @@ app.delete("/comment-delete/:id", async (req, res) => {
   }
 });
 
+app.get('/search',async (req,res)=> {
+  try {
+    const { q } = req.query;
+    console.log(q);     // ?q=your search term
+
+    if (!q || q.trim() === '') {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Search query is required" 
+      });
+    }
+
+    const searchRegex = new RegExp(q, 'i');   // 'i' = case insensitive
+
+    const ideas = await database.collection("ideas").find({
+      title: { $regex: searchRegex }
+    })
+    .sort({ createdAt: -1 })
+    .limit(10).toArray();  
+
+    res.json({
+      success: true,
+      results: ideas,
+      count: ideas.length,
+      query: q
+    });
+
+  } catch (error) {
+    console.error('Search Error:', error);
+    res.status(500).json({
+      success: false,
+      message: "Server error during search"
+    });
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
