@@ -1,7 +1,7 @@
 # ThinkShare - Server Site
 
 ## 🌐 Live Site
-**Client Side:** [https://thinkshare-client.vercel.app](https://thinkshare-client.vercel.app)
+**Client Side:** [https://think-share-server-site.vercel.app](https://thinkshare-client.vercel.app)
 
 ---
 
