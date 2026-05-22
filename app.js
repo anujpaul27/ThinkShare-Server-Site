@@ -11,31 +11,31 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-const JWS = createRemoteJWKSet(new URL(`${process.env.CLIENT_URL}/api/auth/jwt/jwks`));
+// const JWS = createRemoteJWKSet(new URL(`${process.env.CLIENT_URL}/api/auth/jwt/jwks`));
 
 // User Token verify middleware
-const userTokenVerify = async (req, res, next) => {
-  // const token = req.headers.token;
-  const token = req.cookies['__Secure-better-auth.session_data'];
-  // console.log(token);
+// const userTokenVerify = async (req, res, next) => {
+//   // const token = req.headers.token;
+//   const token = req.cookies['__Secure-better-auth.session_data'];
+//   // console.log(token);
 
-  if (!token) {
-    return res.status(401).json({
-      message: "Invalid User",
-    });
-  }
-  next();
-  // try {
-  //   const { payload } = await jwtVerify(token, JWS);
-  //   if (payload) {
-  //     next();
-  //   }
-  // } catch (err) {
-  //   res.status(401).json({
-  //     message: err.message,
-  //   });
-  // }
-};
+//   if (!token) {
+//     return res.status(401).json({
+//       message: "Invalid User",
+//     });
+//   }
+//   next();
+//   // try {
+//   //   const { payload } = await jwtVerify(token, JWS);
+//   //   if (payload) {
+//   //     next();
+//   //   }
+//   // } catch (err) {
+//   //   res.status(401).json({
+//   //     message: err.message,
+//   //   });
+//   // }
+// };
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = process.env.MONGODB_URI;
@@ -72,7 +72,7 @@ app.get("/", (req, res) => {
 });
 
 // CREATE IDEA
-app.post("/create-idea", userTokenVerify, async (req, res) => {
+app.post("/create-idea", async (req, res) => {
   try {
     // Convert array and then save to DB
     const tag = req.body.tags.split(",");
@@ -107,7 +107,7 @@ app.get("/read-idea", async (req, res) => {
 });
 
 // READ IDEA without condition
-app.get("/read-idea-all", userTokenVerify, async (req, res) => {
+app.get("/read-idea-all", async (req, res) => {
   const ideas = await database.collection("ideas").find().toArray();
 
   res.status(200).json({
@@ -117,7 +117,7 @@ app.get("/read-idea-all", userTokenVerify, async (req, res) => {
 });
 
 // UPDATED IDEA
-app.put("/idea-update/:id", userTokenVerify, async (req, res) => {
+app.put("/idea-update/:id", async (req, res) => {
   // get the id from the params
   const query = { _id: new ObjectId(req.params.id) };
 
@@ -140,7 +140,7 @@ app.put("/idea-update/:id", userTokenVerify, async (req, res) => {
 });
 
 // Find Specif idea
-app.get("/idea/:id", userTokenVerify, async (req, res) => {
+app.get("/idea/:id", async (req, res) => {
   const id = new ObjectId(req.params.id);
   try {
     const result = await database.collection("ideas").findOne({ _id: id });
@@ -157,7 +157,7 @@ app.get("/idea/:id", userTokenVerify, async (req, res) => {
 });
 
 // Delete Idea
-app.delete("/idea-delete/:id",userTokenVerify, async (req, res) => {
+app.delete("/idea-delete/:id" ,async (req, res) => {
   try {
     // get the id from the params for create new _id
     const query = { _id: new ObjectId(req.params.id) };
@@ -183,7 +183,7 @@ app.delete("/idea-delete/:id",userTokenVerify, async (req, res) => {
 });
 
 // Find my idea with author id
-app.get("/my-ideas/:id", userTokenVerify, async (req, res) => {
+app.get("/my-ideas/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const ideas = await database
@@ -205,7 +205,7 @@ app.get("/my-ideas/:id", userTokenVerify, async (req, res) => {
 });
 
 // Post comment
-app.post("/comment", userTokenVerify, async (req, res) => {
+app.post("/comment", async (req, res) => {
   try {
     const result = await database.collection("comment").insertOne(req.body);
     // success response
@@ -221,7 +221,7 @@ app.post("/comment", userTokenVerify, async (req, res) => {
 });
 
 // Get Comment with post id
-app.get("/comment/:id",userTokenVerify, async (req, res) => {
+app.get("/comment/:id", async (req, res) => {
   try {
     const comments = await database
       .collection(`comment`)
@@ -240,7 +240,7 @@ app.get("/comment/:id",userTokenVerify, async (req, res) => {
 });
 
 // Get Comment with comment id
-app.get("/comments/:id",userTokenVerify, async (req, res) => {
+app.get("/comments/:id", async (req, res) => {
   const id = new ObjectId(req.params.id);
   try {
     const comments = await database
@@ -260,7 +260,7 @@ app.get("/comments/:id",userTokenVerify, async (req, res) => {
 });
 
 // Get Comment with user id
-app.get("/comments-userID/:id",userTokenVerify, async (req, res) => {
+app.get("/comments-userID/:id", async (req, res) => {
   try {
     const comments = await database
       .collection(`comment`)
@@ -279,7 +279,7 @@ app.get("/comments-userID/:id",userTokenVerify, async (req, res) => {
 });
 
 // UPDATED comment
-app.put("/comments/:id",userTokenVerify, async (req, res) => {
+app.put("/comments/:id", async (req, res) => {
   // get the id from the params
   const query = { _id: new ObjectId(req.params.id) };
   console.log(req.body.text);
@@ -298,7 +298,7 @@ app.put("/comments/:id",userTokenVerify, async (req, res) => {
 });
 
 // Delete comment
-app.delete("/comment-delete/:id",userTokenVerify, async (req, res) => {
+app.delete("/comment-delete/:id", async (req, res) => {
   try {
     // get the id from the params for create new _id
     const query = { _id: new ObjectId(req.params.id) };
